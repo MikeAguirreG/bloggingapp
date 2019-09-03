@@ -256,5 +256,19 @@ User.doesEmailExist = function(email){
     })
 }
 
+// User.getEmailToSend = function(_id){
+//     return new Promise(async function(resolve, reject){
+//         let emailAddress = await userCollection.findOne({_id : new ObjectID(_id)})
+//         // console.log("fasdfasdf" +emailAddress)
+//         if(emailAddress){
+//             resolve(emailAddress)
+//         }else{
+//             reject()
+//         }
+//     })
+// }
+
+
+
 
 module.exports = User;

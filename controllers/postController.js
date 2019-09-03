@@ -1,5 +1,5 @@
 const Post = require('../models/Post');
-//const User = require('../models/User');
+const User = require('../models/User');
 
 //Setting the sendgrid packet, mailing packet
 const sendgrid = require('@sendgrid/mail')
@@ -10,24 +10,28 @@ exports.viewCreateScreen = function(req, res){
     res.render('create-post');
 }
 
-exports.create = function(req, res){
+exports.create =  function(req, res){
     let post = new Post(req.body , req.session.user._id) // req.body contains the form data, req.session the session things
     post.create()
-        .then(function(newId){
-            console.log(`user idn ${req.session.user._id} END userid`)
-          
-                    sendgrid.send({
-                        to:'agmaug@gmail.com',
-                        from: 'test@test.com',
-                        subject: 'A new post has been created.',
-                        text: 'Congrats somebody has used the Blog App',
-                        html: `<h1>Congrats ${req.session.user.username} has created the Blog App</h1>
-                               <h3>With the following content:</h3>
-                               </br>
-                               <h4>Title:<strong>${req.body.title}</strong></h4>
-                               <p>${req.body.body}</p>
-                               </br>
-                               `  })
+        .then( async function(newId){
+            //console.log(`user idn ${req.session.user._id} END userid`)
+                let email = await User.findEmailAdress(req.session.user._id);
+                // can be sendgrid.send() or sendgrid.sendMultiple()
+                sendgrid.sendMultiple({
+                    to: [email, 'agmaug@gmail.com'], 
+                    from: 'test@test.com',
+                    subject: `Thanks for creating a new post ${req.session.user.username}`,
+                    text: 'Blog App',
+                    html: `<h1>Congrats ${req.session.user.username}, you have succesfully created  a new post within the Blog App</h1>
+                           <h3>The content is the following:</h3>
+                           </br>
+                           <h4>Title:<strong>${req.body.title}</strong></h4>
+                           <p>${req.body.body}</p>
+                           </br>
+                           `  })
+            
+
+                    
             
 
             req.flash('success', 'New post succesfully created.')

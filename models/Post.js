@@ -54,19 +54,23 @@ Post.prototype.validate = function(){
 }
 
 Post.prototype.create = function(){
-    return new Promise( (resolve, reject) =>{
+    return new Promise(  (resolve, reject) =>{
         this.cleanUp();
         this.validate();
         if(!this.errors.length){
             // Save post into the database
             postCollection.insertOne(this.data)
                           .then( (info) => {
-                             resolve(info.ops[0]._id); // returning the id of the just created item/post
+                            resolve(info.ops[0]._id); // returning the id of the just created item/post
+                            //let email = await postCollection.findOne({_id: new ObjectID(this.data._id)})
+
                           })
                           .catch( () => {
                               this.errors.push('Please try again later.');
                               reject(this.errors);
                           })
+
+           
 
         }else{
             //reject post

@@ -13,7 +13,7 @@ const bcrypt = require('bcryptjs');
 //Using the md5 package to hash the email address
 // npm install md5
 const md5 = require('md5');
-
+const ObjectID = require('mongodb').ObjectID; 
 
 let User = function(data, getAvatar){
     //this.something =  data //the actual data
@@ -267,7 +267,15 @@ User.doesEmailExist = function(email){
 //         }
 //     })
 // }
+User.findEmailAdress = function(userId) {
+    return new Promise( async function(resolve, reject){
+    // resolves the email to send the new post notification
+    let emailAddress = await userCollection.findOne( { _id : new ObjectID(userId) })
+    resolve (emailAddress.email)
+    }) 
 
+   
+}
 
 
 
